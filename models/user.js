@@ -1,17 +1,46 @@
 import mongoose from "mongoose";
 
-const userSchema = new mongoose.Schema({
-  name: String,
-  email: String,
-  password: String,
-  role: {
-    type: String,
-    default: "student", // student | tutor | admin
+const userSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+      trim: true
+    },
+
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true
+    },
+
+    password: {
+      type: String,
+      required: true,
+      minlength: 6
+    },
+
+    role: {
+      type: String,
+      enum: ["admin", "student"],
+      default: "student"
+    },
+
+    age: {
+      type: Number,
+      min: 3,
+      max: 100
+    },
+
+    programLevel: {
+      type: String,
+      enum: ["beginner", "intermediate", "advanced"],
+      default: "beginner"
+    }
   },
-  verified: {
-    type: Boolean,
-    default: false,
-  },
-});
+  { timestamps: true }
+);
 
 export default mongoose.model("User", userSchema);

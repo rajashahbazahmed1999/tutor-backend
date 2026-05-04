@@ -16,7 +16,17 @@
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
-    "mongoose": "^9.4.1",
+    "mongoose": "^9.6.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rajashahbazahmed1999/tutor-backend.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rajashahbazahmed1999/tutor-backend/issues"
+  },
+  "homepage": "https://github.com/rajashahbazahmed1999/tutor-backend#readme",
+  "devDependencies": {
     "nodemon": "^3.1.14"
   }
 }
