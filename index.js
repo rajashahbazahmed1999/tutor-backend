@@ -12,14 +12,19 @@ import paymentRoutes from "./routes/paymentRoutes.js";
 import trialRoutes from "./routes/trialRoutes.js";
 import dns from "dns";
 
+
 dotenv.config();
 
 dns.setDefaultResultOrder("ipv4first");
 
 const app = express();
 
+app.use(cors({
+  origin: "http://localhost:5173", 
+  credentials: true
+}));
 
-app.use(cors());
+
 app.use(express.json());
 
 

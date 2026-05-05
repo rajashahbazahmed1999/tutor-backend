@@ -1,13 +1,13 @@
-import User from "../models/User.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
+import User from "../models/User.js";
 
-// ✅ Signup
+// ✅ SIGNUP
 export const signup = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, role, age, programLevel } = req.body;
 
-    // 🔥 check duplicate user
+    // check duplicate
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ msg: "Email already exists" });
@@ -19,26 +19,29 @@ export const signup = async (req, res) => {
     const user = await User.create({
       name,
       email,
-      password: hashedPassword
+      password: hashedPassword,
+      role,
+      age,
+      programLevel
     });
 
     res.status(201).json({
-      msg: "User created successfully",
+      msg: "User created",
       user: {
         id: user._id,
-        name: user.name,
         email: user.email,
         role: user.role
       }
     });
 
   } catch (err) {
+    console.log("SIGNUP ERROR:", err.message);
     res.status(500).json({ msg: err.message });
   }
 };
 
 
-// ✅ Login
+// ✅ LOGIN (separate function)
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -65,13 +68,13 @@ export const login = async (req, res) => {
       token,
       user: {
         id: user._id,
-        name: user.name,
         email: user.email,
         role: user.role
       }
     });
 
   } catch (err) {
+    console.log("LOGIN ERROR:", err.message);
     res.status(500).json({ msg: err.message });
   }
 };
