@@ -11,6 +11,7 @@ import scheduleRoutes from "./routes/scheduleRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
 import trialRoutes from "./routes/trialRoutes.js";
 import dns from "dns";
+import tutorRoutes from "./routes/tutorRoutes.js";
 
 
 dotenv.config();
@@ -27,7 +28,7 @@ app.use(cors({
 
 app.use(express.json());
 
-
+app.use("/api/tutors", tutorRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/groups", groupRoutes);
