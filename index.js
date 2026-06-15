@@ -25,6 +25,10 @@ app.use(cors({
   credentials: true
 }));
 
+app.use(
+"/api/payments",
+paymentRoutes
+);
 
 app.use(express.json());
 

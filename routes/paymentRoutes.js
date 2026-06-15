@@ -1,41 +1,63 @@
 import express from "express";
 
+import {
+createPayment,
+confirmPayment,
+markPaymentReceived,
+getPayments,
+myPayments
+
+} from "../controllers/paymentController.js";
+
+
 import auth from "../middleware/authMiddleware.js";
 import role from "../middleware/roleMiddleware.js";
 
-import {
-  createGroup,
-  getGroups,
-  addStudent,
-  removeStudent,
-  deleteGroup
-} from "../controllers/groupController.js";
 
 const router = express.Router();
 
-/**
- * Create Group (Admin only)
- */
-router.post("/", auth, role("admin"), createGroup);
 
-/**
- * Get all groups (Admin + Students)
- */
-router.get("/", auth, getGroups);
 
-/**
- * Add student to group (Admin only)
- */
-router.post("/:id/add", auth, role("admin"), addStudent);
+// student
+router.post(
+"/create",
+auth,
+createPayment
+);
 
-/**
- * Remove student from group (Admin only)
- */
-router.post("/:id/remove", auth, role("admin"), removeStudent);
 
-/**
- * Delete group (Admin only)
- */
-router.delete("/:id", auth, role("admin"), deleteGroup);
+router.put(
+"/confirm/:id",
+auth,
+confirmPayment
+);
+
+
+router.get(
+"/my",
+auth,
+myPayments
+);
+
+
+
+// admin
+
+router.post(
+"/manual",
+auth,
+role("admin"),
+markPaymentReceived
+);
+
+
+router.get(
+"/",
+auth,
+role("admin"),
+getPayments
+);
+
+
 
 export default router;
