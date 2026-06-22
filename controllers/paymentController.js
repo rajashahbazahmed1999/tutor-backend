@@ -1,85 +1,73 @@
+import stripe from "../config/stripe.js";
 import Payment from "../models/Payment.js";
-import Stripe from "stripe";
 
 
-const stripe = new Stripe(
-  process.env.STRIPE_SECRET_KEY
-);
+// ================= CREATE PAYMENT =================
+
+const createPayment = async (req, res) => {
+
+  try {
+
+    const { amount } = req.body;
 
 
-// CREATE PAYMENT
-export const createPayment = async (req,res)=>{
+    const paymentIntent =
+      await stripe.paymentIntents.create({
 
-try{
+        amount: Number(amount) * 100,
 
-const { amount } = req.body;
+        currency: "usd",
 
+        automatic_payment_methods: {
+          enabled: true
+        }
 
-if(!amount){
- return res.status(400).json({
-  msg:"Amount required"
- });
-}
-
-
-const paymentIntent =
-await stripe.paymentIntents.create({
-
- amount:Number(amount)*100,
-
- currency:"usd",
-
- automatic_payment_methods:{
-  enabled:true
- }
-
-});
+      });
 
 
-const payment =
-await Payment.create({
 
- userId:req.user.userId,
+    const payment = await Payment.create({
 
- amount:Number(amount),
+      userId: req.user.userId,
 
- method:"stripe",
+      amount: Number(amount),
 
- status:"pending",
+      status: "pending",
 
- transactionId:paymentIntent.id
+      method: "stripe",
 
-});
+      transactionId: paymentIntent.id
 
-
-res.status(201).json({
-
- clientSecret:
- paymentIntent.client_secret,
-
- payment
-
-});
+    });
 
 
-}
-catch(error){
 
-console.log(error.message);
+    res.json({
 
-res.status(500).json({
- msg:error.message
-});
+      clientSecret: paymentIntent.client_secret,
 
-}
+      paymentId: payment._id
+
+    });
+
+
+  } catch (error) {
+
+    res.status(500).json({
+      msg:error.message
+    });
+
+  }
 
 };
 
 
 
 
-// CONFIRM PAYMENT
-export const confirmPayment = async(req,res)=>{
+
+// ================= CONFIRM PAYMENT =================
+
+const confirmPayment = async (req,res)=>{
 
 try{
 
@@ -88,17 +76,18 @@ const payment =
 await Payment.findById(req.params.id);
 
 
+
 if(!payment){
 
 return res.status(404).json({
- msg:"Payment not found"
+msg:"Payment not found"
 });
 
 }
 
 
 
-payment.status="paid";
+payment.status = "paid";
 
 
 await payment.save();
@@ -114,11 +103,12 @@ payment
 });
 
 
+
 }
 catch(error){
 
 res.status(500).json({
- msg:error.message
+msg:error.message
 });
 
 }
@@ -128,71 +118,56 @@ res.status(500).json({
 
 
 
-// ADMIN MANUAL PAYMENT
-export const markPaymentReceived =
-async(req,res)=>{
 
+// ================= ADMIN MANUAL PAYMENT =================
+
+const markPaymentReceived = async(req,res)=>{
 
 try{
-
-
-const {
- userId,
- amount
-}=req.body;
-
 
 
 const payment =
 await Payment.create({
 
- userId,
+userId:req.body.userId,
 
- amount:Number(amount),
+amount:req.body.amount,
 
- method:"manual",
+method:"manual",
 
- status:"paid"
+status:"paid"
 
 });
-
 
 
 res.json(payment);
 
 
-
 }
 catch(error){
 
 res.status(500).json({
- msg:error.message
+msg:error.message
 });
 
 }
-
 
 };
 
 
 
 
-// GET ALL PAYMENTS ADMIN
-export const getPayments =
-async(req,res)=>{
 
+// ================= GET PAYMENTS =================
+
+const getPayments = async(req,res)=>{
 
 try{
 
 
 const payments =
-await Payment
-.find()
-.populate(
-"userId",
-"name email"
-);
-
+await Payment.find()
+.populate("userId");
 
 
 res.json(payments);
@@ -202,42 +177,46 @@ res.json(payments);
 catch(error){
 
 res.status(500).json({
- msg:error.message
+msg:error.message
 });
 
 }
 
 };
 
+// ================= USER PAYMENT HISTORY =================
+
+const myPayments = async (req, res) => {
+
+  try {
+
+    const payments = await Payment.find({
+      userId: req.user.userId
+    })
+    .sort({
+      createdAt: -1
+    });
 
 
-// USER PAYMENTS
-
-export const myPayments =
-async(req,res)=>{
+    res.json(payments);
 
 
-try{
+  } catch(error) {
+
+    res.status(500).json({
+      msg: error.message
+    });
+
+  }
+
+};
 
 
-const payments =
-await Payment.find({
-
-userId:req.user.userId
-
-});
-
-
-res.json(payments);
-
-
-}
-catch(error){
-
-res.status(500).json({
- msg:error.message
-});
-
-}
-
+// VERY IMPORTANT PART
+export {
+ createPayment,
+ confirmPayment,
+ markPaymentReceived,
+ getPayments,
+ myPayments,
 };
