@@ -1,8 +1,7 @@
-import stripe from "../config/stripe.js";
+//import stripe from "../config/stripe.js";
 import Payment from "../models/Payment.js";
 
 
-// ================= CREATE PAYMENT =================
 
 const createPayment = async (req, res) => {
 
@@ -65,7 +64,7 @@ const createPayment = async (req, res) => {
 
 
 
-// ================= CONFIRM PAYMENT =================
+
 
 const confirmPayment = async (req,res)=>{
 
@@ -119,7 +118,7 @@ msg:error.message
 
 
 
-// ================= ADMIN MANUAL PAYMENT =================
+
 
 const markPaymentReceived = async(req,res)=>{
 
@@ -158,7 +157,7 @@ msg:error.message
 
 
 
-// ================= GET PAYMENTS =================
+
 
 const getPayments = async(req,res)=>{
 
@@ -184,7 +183,7 @@ msg:error.message
 
 };
 
-// ================= USER PAYMENT HISTORY =================
+
 
 const myPayments = async (req, res) => {
 
@@ -212,7 +211,7 @@ const myPayments = async (req, res) => {
 };
 
 
-// VERY IMPORTANT PART
+
 export {
  createPayment,
  confirmPayment,

@@ -18,7 +18,7 @@ const router = express.Router();
 
 
 
-// student
+
 router.post(
 "/create",
 auth,
@@ -41,7 +41,7 @@ myPayments
 
 
 
-// admin
+
 
 router.post(
 "/manual",
