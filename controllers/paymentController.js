@@ -1,4 +1,4 @@
-//import stripe from "../config/stripe.js";
+import Stripe from "stripe";
 import Payment from "../models/Payment.js";
 
 
@@ -8,6 +8,8 @@ const createPayment = async (req, res) => {
   try {
 
     const { amount } = req.body;
+
+   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 
     const paymentIntent =
@@ -23,7 +25,7 @@ const createPayment = async (req, res) => {
 
       });
 
-
+     console.log("Payment Intent Created:", paymentIntent);
 
     const payment = await Payment.create({
 
@@ -51,7 +53,7 @@ const createPayment = async (req, res) => {
 
 
   } catch (error) {
-
+    console.log(error)
     res.status(500).json({
       msg:error.message
     });
